@@ -45,8 +45,8 @@ export default function Home({ data }: IProps) {
           className="w-[300px] h-[420px] cursor-pointer group perspective"
         >
           <div className="relative w-full preserve-3d group-hover:rotate-y-180 h-full duration-1000 flex ">
-            <figure className="p-5 text-center absolute backface-hidden border-4 rounded-xl w-full h-full flex flex-col gap-6 items-center justify-center bg-cyan-600">
-              <section className="h-[49%] bg-white rounded-3xl overflow-hidden">
+            <figure className="preserve-3d p-5 text-center absolute backface-hidden border-4 rounded-xl w-full h-full flex flex-col gap-6 items-center justify-center bg-cyan-600 perspective">
+              <section className="h-[49%] bg-white rounded-3xl overflow-hidden translate-z-7 shadow-2xl">
                 <video
                   className="w-full h-full min-w-full min-h-full object-cover"
                   ref={indexTeach == index + 1 ? videoSelected : undefined}
@@ -57,7 +57,9 @@ export default function Home({ data }: IProps) {
                   />
                 </video>
               </section>
-              <p className="text-6xl">{data[index][0].split('=')[0]}</p>
+              <p className="text-6xl translate-z-4">
+                {data[index][0].split('=')[0]}
+              </p>
             </figure>
             <figure className="p-5 text-center absolute backface-hidden border-4 rounded-xl w-full h-full flex flex-col gap-6 items-center justify-center rotate-y-180 bg-red-600">
               <p className="text-6xl">{data[index][0].split('=')[1]}</p>
