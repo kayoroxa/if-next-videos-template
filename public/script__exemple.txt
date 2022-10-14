@@ -1,0 +1,7 @@
+far = longe
+
+gone = passado de go
+
+go = ir
+
+take = some
