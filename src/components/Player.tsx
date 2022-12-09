@@ -7,11 +7,13 @@ import {
   useState,
 } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { AppContext } from '../context/appContext'
 import { TeachContext } from '../context/TeachContext'
 
 interface IPlayer {
   _ref?: RefObject<HTMLVideoElement>
   src: string
+  isStatic?: boolean
 }
 
 function VideoApi(vid: HTMLVideoElement | null) {
@@ -19,6 +21,7 @@ function VideoApi(vid: HTMLVideoElement | null) {
   const [time, setTime] = useState(0)
   const [curSrt, setCurSrt] = useState({ start: 0, end: 0, pt: '', en: '' })
   const [repeat, setRepeat] = useState(false)
+  const { atualPage } = useContext(AppContext)
 
   useEffect(() => {
     if (repeat && vid) {
@@ -30,6 +33,11 @@ function VideoApi(vid: HTMLVideoElement | null) {
 
   useEffect(() => {
     if (!vid) return
+    if (atualPage !== 'scene') {
+      vid.pause()
+      return
+    }
+
     setCurSrt({
       start: dict[teachIndex].start,
       end: dict[teachIndex].end,
@@ -43,7 +51,7 @@ function VideoApi(vid: HTMLVideoElement | null) {
       vid.currentTime = dict[teachIndex].start
       vid.play()
     }
-  }, [teachIndex, vid, dict])
+  }, [teachIndex, vid, dict, atualPage])
 
   return {
     nextTeach: () => {
@@ -60,7 +68,7 @@ function VideoApi(vid: HTMLVideoElement | null) {
   }
 }
 
-const Player = ({ src }: IPlayer) => {
+const Player = ({ src, isStatic = false }: IPlayer) => {
   const { teachIndex, dict } = useContext(TeachContext)
   const video = useRef<HTMLVideoElement>(null)
   const [paused, setPaused] = useState(false)
@@ -71,13 +79,7 @@ const Player = ({ src }: IPlayer) => {
 
   useHotkeys('d', nextTeach)
   useHotkeys('a', prevTeach)
-  useHotkeys('s', repeatTeach)
-
-  useEffect(() => {
-    if (!video.current) return
-    video.current.play()
-    setPaused(false)
-  }, [teachIndex, dict, setTime])
+  useHotkeys('r', repeatTeach)
 
   function handleUpdate(e: SyntheticEvent<HTMLVideoElement>) {
     if (!e.currentTarget) return
@@ -90,10 +92,12 @@ const Player = ({ src }: IPlayer) => {
 
   return (
     <main className="w-full h-full">
-      <div className="absolute bottom-28 text-center flex flex-col gap-5 m-auto left-0 right-0 z-40">
-        <div className="text-6xl text-white">{dict[teachIndex].pt}</div>
-        <div className="text-6xl text-white">{dict[teachIndex].en}</div>
-      </div>
+      {!isStatic && (
+        <div className="absolute bottom-28 text-center flex flex-col gap-5 m-auto left-0 right-0 z-40">
+          <div className="text-6xl text-white">{dict[teachIndex].pt}</div>
+          <div className="text-6xl text-white">{dict[teachIndex].en}</div>
+        </div>
+      )}
 
       <div
         id="fade"
@@ -104,8 +108,8 @@ const Player = ({ src }: IPlayer) => {
         width="100%"
         height="90%"
         className={`min-h-full min-w-full object-cover transition-all duration-100 `}
-        autoPlay
         muted
+        autoPlay={!isStatic}
         ref={video}
         onTimeUpdate={handleUpdate}
       >

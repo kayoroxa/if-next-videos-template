@@ -34,11 +34,21 @@ const translateZ = plugin(function ({ matchUtilities, theme }) {
 
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        walk: {
+          '0%': { transform: 'translateX(0px)' },
+          '100%': { transform: 'translateX(-20px), scale(105)' },
+        },
+      },
+      animation: {
+        walk: 'walk 10s ease-in-out infinite alternate',
+      },
+    },
   },
   plugins: [myClass, translateZ],
 }
