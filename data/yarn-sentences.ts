@@ -96,5 +96,3 @@ That was really nice.
 Isso foi muito bom.
 
 `
-
-console.log(dict.split('\n\n').filter(Boolean).length)
