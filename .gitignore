@@ -38,3 +38,9 @@ next-env.d.ts
 
 #others
 *script.txt
+
+
+#files
+*.png
+*.jpg
+*.mp4

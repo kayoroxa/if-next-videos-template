@@ -28,9 +28,18 @@ function Yarn({
 
 function Quiz({ options }: { options: string[] }) {
   return (
-    <div className="text-black">
-      {options.map(o => {
-        return <div key={o}>{o}</div>
+    <div className="text-black text-6xl flex flex-col gap-11">
+      {options.map((o, i) => {
+        return (
+          <div key={o} className="flex items-center">
+            <div className="bg-blue-300 px-5 h-full flex justify-center  rounded-l-lg items-center shadow-md">
+              {i + 1}
+            </div>
+            <div className="bg-zinc-100 py-3 px-5 rounded-r-lg shadow-md">
+              {o}
+            </div>
+          </div>
+        )
       })}
     </div>
   )
@@ -41,10 +50,22 @@ export default function CTSQuiz() {
   const [step, setStep] = useState<'listing' | 'quiz' | 'answer' | 'meaning'>(
     'listing'
   )
+  // const [options, setOptions] = useState(getOptions(dataScript[index][1]))
+
+  // useEffect(() => {
+  //   setOptions(getOptions(dataScript[index][1]))
+  // }, [index])
+
+  const options = useMemo(() => getOptions(dataScript[index][1]), [index])
+
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useHotkeys('d', () => {
-    setIndex(prev => Math.min(dataScript.length - 1, prev + 1))
+    setIndex(prev => {
+      // console.log({ dataScript })
+      // debugger
+      return Math.min(dataScript.length - 1, prev + 1)
+    })
   })
 
   useHotkeys('a', () => {
@@ -64,10 +85,8 @@ export default function CTSQuiz() {
     setStep('quiz')
   })
 
-  const options = useMemo(() => getOptions(dataScript[index][1]), [index])
-
   return (
-    <div className="w-full h-screen bg-green-200 flex flex-col items-center justify-center">
+    <div className="w-full h-screen bg-blue-200 flex flex-col items-center justify-center">
       {step === 'listing' && (
         <Yarn link={dataScript[index][0]} videoRef={videoRef} />
       )}
