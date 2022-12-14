@@ -1,4 +1,4 @@
-import { sample, sampleSize } from 'lodash'
+import { sample, sampleSize, shuffle } from 'lodash'
 import { similarSounds } from '../data/similar-sounds'
 import { yarnSentences } from '../data/yarn-sentences'
 
@@ -9,7 +9,7 @@ const dataSplitted = yarnSentences
 
 export const dataScript = dataSplitted
 
-function enfaseWordsOptions(sentencesOption: string[]) {
+function enfaseWordsOptions(sentencesOption: string[], htmlParse = false) {
   const sentencesWordsSplitted = sentencesOption.map(
     sentence => sentence.match(/[’'a-zA-Z]+/gi) || []
   )
@@ -19,14 +19,8 @@ function enfaseWordsOptions(sentencesOption: string[]) {
     wordIndex++
   ) {
     const dataWords = sentencesWordsSplitted.map(sentenceRow =>
-      sentenceRow[wordIndex].toLocaleLowerCase()
+      sentenceRow[wordIndex]?.toLocaleLowerCase()
     )
-
-    // const dataWords = [
-    //   sentencesWordsSplitted[0][wordIndex].toLocaleLowerCase(),
-    //   sentencesWordsSplitted[1][wordIndex].toLocaleLowerCase(),
-    //   sentencesWordsSplitted[2][wordIndex].toLocaleLowerCase(),
-    // ]
 
     const isEqual = new Set(dataWords).size === 1
 
@@ -34,10 +28,17 @@ function enfaseWordsOptions(sentencesOption: string[]) {
       sentencesOption = sentencesOption.map((sentence, index) => {
         const word: string = sentencesWordsSplitted[index][wordIndex]
 
-        return sentence.replace(
-          new RegExp(`(?<!'|\\w)${word}(?!'|\\w)`, 'gi'),
-          `[${word.toUpperCase()}]`
-        )
+        if (htmlParse) {
+          return sentence.replace(
+            new RegExp(`(?<!'|\\w)${word}(?!'|\\w)`, 'gi'),
+            `<span style="color:rgb(234 88 12)">${word}</span>`
+          )
+        } else {
+          return sentence.replace(
+            new RegExp(`(?<!'|\\w)${word}(?!'|\\w)`, 'gi'),
+            `[${word.toUpperCase()}]`
+          )
+        }
       })
     }
   }
@@ -80,5 +81,11 @@ export function getOptions(sentence: string) {
     }
   }
 
-  return enfaseWordsOptions(sentencesOption.slice(0, 3))
+  const shuffledSentencesOption = shuffle(sentencesOption.slice(0, 3))
+
+  return {
+    raw: shuffledSentencesOption,
+    formatted: enfaseWordsOptions(shuffledSentencesOption, true),
+    answerSentence: sentencesOption[0],
+  }
 }

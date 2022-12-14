@@ -35,17 +35,51 @@ function Yarn({
   )
 }
 
-function Quiz({ options }: { options: string[] }) {
+function Quiz({
+  options,
+  showAnswer,
+}: {
+  options: {
+    raw: string[]
+    formatted: string[]
+    answerSentence: string
+  }
+  showAnswer?: boolean
+}) {
   return (
     <div className="text-black text-6xl flex flex-col gap-7">
-      {options.map((o, i) => {
+      {options.formatted.map((o, i) => {
+        console.log(
+          options.answerSentence,
+          '-',
+          options.raw[i],
+          options.answerSentence === options.raw[i]
+        )
+
+        const isRight = options.answerSentence === options.raw[i]
         return (
-          <div key={o} className="flex items-center">
-            <div className="bg-blue-300 px-5 h-full flex justify-center  rounded-l-lg items-center shadow-md">
+          <div
+            key={o}
+            className={classNames('flex items-center', {
+              'opacity-30': !isRight && showAnswer,
+            })}
+          >
+            <div
+              className={classNames(
+                'bg-blue-300 px-5 h-full flex justify-center  rounded-l-lg items-center shadow-md',
+                { 'bg-red-300': !isRight && showAnswer },
+                { 'bg-green-300': isRight && showAnswer }
+              )}
+            >
               {i + 1}
             </div>
-            <div className="bg-zinc-100 py-3 px-5 rounded-r-lg shadow-md">
-              {o}
+            <div
+              className={classNames(
+                'bg-zinc-100 py-3 px-5 rounded-r-lg shadow-md'
+              )}
+              dangerouslySetInnerHTML={{ __html: o }}
+            >
+              {/* {o} */}
             </div>
           </div>
         )
@@ -76,12 +110,13 @@ export default function CTSQuiz() {
       // debugger
       return Math.min(dataScript.length - 1, prev + 1)
     })
+    setStep('listing')
   })
 
   useHotkeys('a', () => {
     setIndex(prev => Math.max(0, prev - 1))
   })
-  useHotkeys('f', () => {
+  useHotkeys('s', () => {
     if (videoRef?.current) {
       videoRef.current.play()
     }
@@ -101,14 +136,30 @@ export default function CTSQuiz() {
     setStep('quiz')
   })
 
+  useHotkeys('3', () => {
+    setStep('answer')
+  })
+
+  useHotkeys('4', () => {
+    setStep('meaning')
+  })
+
   return (
     <div className="w-full h-screen bg-blue-200 flex flex-col items-center justify-center relative gap-10">
       <Yarn
         link={dataScript[index][0]}
         videoRef={videoRef}
-        small={step === 'quiz'}
+        small={step !== 'listing'}
       />
-      {step === 'quiz' && <Quiz options={options} />}
+      {(step === 'quiz' || step === 'answer') && (
+        <Quiz options={options} showAnswer={step === 'answer'} />
+      )}
+      {step === 'meaning' && (
+        <div className="text-8xl">
+          <p className="font-bold"> {dataScript[index][1]}</p>
+          <p className="font-thin">{dataScript[index][2]}</p>
+        </div>
+      )}
 
       <div className="absolute bottom-0 left-0 text-xs">
         {index + 1}/{dataScript.length}
