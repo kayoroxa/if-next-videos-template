@@ -39,4 +39,6 @@ export const similarSounds = [
   ['read', 'really'],
   ['sounds', 'sound'],
   ['sorry', 'boring', 'gory'],
+  ['with a', 'we dig a'],
+  ['go to', 'go out'],
 ].map(v => v.map(v => v.toLowerCase()))

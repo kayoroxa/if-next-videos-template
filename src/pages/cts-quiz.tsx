@@ -16,8 +16,8 @@ function Yarn({
     <section className="text-center">
       <main
         className={classNames(
-          'w-[60vw] h-[60vh] overflow-hidden rounded-xl relative',
-          { 'w-[35vw] h-[35vh]': small }
+          'w-[60vw] h-[60vh] overflow-hidden rounded-xl relative shadow-2xl',
+          { 'shadow-none w-[35vw] h-[35vh]': small }
         )}
       >
         <video
