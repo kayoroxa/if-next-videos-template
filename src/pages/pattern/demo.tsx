@@ -1,18 +1,25 @@
 import classes from 'classnames'
 import { random } from 'lodash'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 const script = `
-  how has (your|him|her) (day|week|year|night) been (you|she)
+  how has (your|his|her) (day|week|year|night) been
+  how has (your mother|your dad) (day|week|year|night) been
 `
-  .split(/[()]/g)
-  .filter(v => v.trim().length > 0)
-  .map(v => {
-    v = v.trim()
-    if (v.includes('|')) return [...v.split('|'), 0]
-    else return v
-  })
+  .split('\n')
+  .filter(Boolean)
+  .map(line =>
+    line
+      .trim()
+      .split(/[()]/g)
+      .filter(v => v.trim().length > 0)
+      .map(v => {
+        v = v.trim()
+        if (v.includes('|')) return [...v.split('|'), 0]
+        else return v
+      })
+  )
 
 function GetElement({ block }: { block: string | (string | number)[] }) {
   const hasOption = typeof block !== 'string'
@@ -54,24 +61,22 @@ function GetElement({ block }: { block: string | (string | number)[] }) {
 
 export default function PatternDemo() {
   const [indexSentence, setIndexSentence] = useState(0)
-  const [sentenceData, setSentenceData] = useState([
-    'how has',
-    ['your', 'him', 'her', 0],
-    ['day', 'week', 'year', 'night', 0],
-    'been',
-    // ['you', 'she', 'us', 'her', 1],
-  ])
+  const [sentenceData, setSentenceData] = useState(script[0])
 
   useHotkeys('d', () => {
-    setIndexSentence(prev => prev + 1)
+    setIndexSentence(prev => Math.min(prev + 1, script.length - 1))
+  })
+  useHotkeys('a', () => {
+    setIndexSentence(prev => Math.max(0, prev - 1))
   })
 
+  useEffect(() => {
+    setSentenceData(script[indexSentence])
+  }, [indexSentence])
+
   useHotkeys('enter', () => {
-    console.log('1')
     setSentenceData(prev => {
-      console.log(JSON.stringify(prev))
-      const s = [...prev]
-      const newPrev = s.map(v => {
+      const newPrev = prev.map(v => {
         if (Array.isArray(v)) {
           v.pop()
           const indexRandom = random(0, v.length - 1, false)
@@ -80,8 +85,6 @@ export default function PatternDemo() {
         }
         return v
       })
-      console.log(newPrev)
-      console.log(prev)
       return newPrev
     })
   })
