@@ -1,4 +1,8 @@
 export const yarnSentences = `
+as
+You lied, Flik. You lied to her.
+Você mentiu, Flik. Você mentiu para ela.
+
 https://y.yarn.co/25cbd0a7-263d-4c76-85bf-d91f9e4e39df.mp4
 I'm not finished
 eu não terminei

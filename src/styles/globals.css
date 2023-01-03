@@ -6,13 +6,18 @@
 
 @layer base {
   html {
-    font-family: Roboto, system-ui, sans-serif;
+    /* font-family: Roboto, system-ui, sans-serif; */
     /* color: white; */
+    /* font-family: 'Amaranth', sans-serif; */
   }
 }
 
 * {
   box-sizing: border-box;
+}
+
+*::selection {
+  background-color: hsl(48, 100%, 70%);
 }
 
 .preserve-3d {
