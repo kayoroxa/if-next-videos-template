@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 const script = `
+(i|you) know what (are you doing|happened|is that)
+  (I|you) don't know
+  Excuse me
   how has (your|his|her) (day|week|year|night) been
-  how has (your mother|your dad) (day|week|year|night) been
+  we are not about
 `
   .split('\n')
   .filter(Boolean)

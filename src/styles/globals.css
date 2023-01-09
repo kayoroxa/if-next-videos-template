@@ -17,7 +17,10 @@
 }
 
 *::selection {
-  background-color: hsl(48, 100%, 70%);
+  background-color: hsl(48, 89%, 64%);
+}
+.selection-dark::selection {
+  background-color: hsl(48, 86%, 53%);
 }
 
 .preserve-3d {
